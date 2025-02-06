@@ -31,6 +31,8 @@ public class Litchi {
                 unmarkTask(in);
             } else if (in.startsWith("todo ")) {
                 addTodo(in);
+            } else if (in.startsWith("deadline ")) {
+                addDeadline(in);
             }
         }
     }
@@ -45,7 +47,7 @@ public class Litchi {
     }
 
     public static void addTodo(String in) {
-        Task newTodo = new Todo(in);
+        Task newTodo = new Todo(in.substring(5));
         tasks[taskNum] = newTodo;
         taskNum++;
         System.out.println(indentations);
@@ -87,5 +89,9 @@ public class Litchi {
             System.out.println("Out of range!");
             System.out.println(indentations);
         }
+    }
+
+    public static void addDeadline(String in) {
+        
     }
 }
