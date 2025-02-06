@@ -24,20 +24,13 @@ public class Litchi {
             }
 
             if (in.equals("list")) {
-                System.out.println(indentations);
-                for (int i = 0; i < taskNum; i++) {
-                    int j = i + 1;
-                    System.out.println(j + ". " + tasks[i]);
-                }
-                System.out.println(indentations);
-            } else if (in.equals("list")) {
                 printTaskList();
             } else if (in.startsWith("mark ")) {
                 markTask(in);
             } else if (in.startsWith("unmark ")) {
                 unmarkTask(in);
-            } else {
-                addTask(in);
+            } else if (in.startsWith("todo ")) {
+                addTodo(in);
             }
         }
     }
@@ -51,12 +44,18 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void addTask(String in) {
-        Task newTask = new Task(in);
-        tasks[taskNum] = newTask;
+    public static void addTodo(String in) {
+        Task newTodo = new Todo(in);
+        tasks[taskNum] = newTodo;
         taskNum++;
         System.out.println(indentations);
-        System.out.println("added: " + newTask.toString());
+        System.out.println("Got it. I've added this task:");
+        System.out.println("  " + newTodo.toString());
+        if (taskNum == 1) {
+            System.out.println("Now you have " + taskNum + " task in the list.");
+        } else {
+            System.out.println("Now you have " + taskNum + " tasks in the list.");
+        }
         System.out.println(indentations);
     }
 
