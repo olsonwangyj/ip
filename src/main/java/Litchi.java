@@ -47,7 +47,7 @@ public class Litchi {
     }
 
     public static void addTodo(String in) {
-        Task newTodo = new Todo(in.substring(5));
+        Task newTodo = new Todo(in.substring(5).trim());
         tasks[taskNum] = newTodo;
         taskNum++;
         System.out.println(indentations);
@@ -92,6 +92,19 @@ public class Litchi {
     }
 
     public static void addDeadline(String in) {
-        
+        int begin = 9;
+        int end = in.indexOf("/by");
+        Task newDeadline = new Deadline(in.substring(9, end), in.substring(end + 3).trim());
+        tasks[taskNum] = newDeadline;
+        taskNum++;
+        System.out.println(indentations);
+        System.out.println("Got it. I've added this task:");
+        System.out.println("  " + newDeadline.toString());
+        if (taskNum == 1) {
+            System.out.println("Now you have " + taskNum + " task in the list.");
+        } else {
+            System.out.println("Now you have " + taskNum + " tasks in the list.");
+        }
+        System.out.println(indentations);
     }
 }
