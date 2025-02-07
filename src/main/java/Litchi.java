@@ -33,6 +33,8 @@ public class Litchi {
                 addTodo(in);
             } else if (in.startsWith("deadline ")) {
                 addDeadline(in);
+            } else if (in.startsWith("event ")) {
+                addEvent(in);
             }
         }
     }
@@ -100,6 +102,24 @@ public class Litchi {
         System.out.println(indentations);
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + newDeadline.toString());
+        if (taskNum == 1) {
+            System.out.println("Now you have " + taskNum + " task in the list.");
+        } else {
+            System.out.println("Now you have " + taskNum + " tasks in the list.");
+        }
+        System.out.println(indentations);
+    }
+
+    public static void addEvent(String in) {
+        int begin = 6;
+        int from = in.indexOf("/from");
+        int to = in.indexOf("/to");
+        Task newEvent = new Event(in.substring(6, from).trim(), in.substring(from + 5, to).trim(), in.substring(to + 3).trim());
+        tasks[taskNum] = newEvent;
+        taskNum++;
+        System.out.println(indentations);
+        System.out.println("Got it. I've added this task:");
+        System.out.println("  " + newEvent.toString());
         if (taskNum == 1) {
             System.out.println("Now you have " + taskNum + " task in the list.");
         } else {
