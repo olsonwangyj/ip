@@ -12,27 +12,41 @@ public class Litchi {
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            String in = scanner.nextLine().trim();
+            try {
+                String in = scanner.nextLine().trim();
 
-            if (in.equals("bye")) {
-                printBye();
-                break;
-            } else if (in.equals("list")) {
-                printTaskList();
-            } else if (in.startsWith("mark ")) {
-                markTask(in);
-            } else if (in.startsWith("unmark ")) {
-                unmarkTask(in);
-            } else if (in.startsWith("todo ")) {
-                addTodo(in);
-            } else if (in.startsWith("deadline ")) {
-                addDeadline(in);
-            } else if (in.startsWith("event ")) {
-                addEvent(in);
-            } else {
-                printDefault();
+                if (in.equals("bye")) {
+                    printBye();
+                    break;
+                } else if (in.equals("list")) {
+                    printTaskList();
+                } else if (in.startsWith("mark")) {
+                    markTask(in);
+                } else if (in.startsWith("unmark")) {
+                    unmarkTask(in);
+                } else if (in.startsWith("todo")) {
+                    addTodo(in);
+                } else if (in.startsWith("deadline")) {
+                    addDeadline(in);
+                } else if (in.startsWith("event")) {
+                    addEvent(in);
+                } else {
+                    throw new LitchiException();
+                }
+            } catch (LitchiException e) {
+                printError(e.getMessage());
+            } catch (NumberFormatException e) {
+                printError("Invalid number format. Please enter a valid task number.");
+            } catch (Exception e) {
+                printError("An unexpected error occurred: " + e.getMessage());
             }
         }
+    }
+
+    public static void printError(String message) {
+        System.out.println(indentations);
+        System.out.println(message);
+        System.out.println(indentations);
     }
 
     public static void printHello() {
@@ -48,19 +62,6 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void printDefault() {
-        System.out.println(indentations);
-        System.out.println("Welcome to Litchi!");
-        System.out.println("Commands:");
-        System.out.println("  todo <task>      - Add a new to-do task.");
-        System.out.println("  deadline <task> /by <date> - Add a task with a deadline.");
-        System.out.println("  event <event> /from <date> /to <date>  - Add an event.");
-        System.out.println("  list            - Show all tasks.");
-        System.out.println("  bye             - Exit the program.");
-        System.out.println(indentations);
-    }
-
-
     public static void printTaskList() {
         System.out.println(indentations);
         System.out.println("Here are the tasks in your list:");
@@ -70,17 +71,10 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void printOutOfRange() {
-        System.out.println(indentations);
-        System.out.println("Out of range!");
-        System.out.println(indentations);
-    }
-
-    public static void markTask(String in) {
+    public static void markTask(String in) throws LitchiException{
         int index = Integer.parseInt(in.substring(5)) - 1;
         if (index < 0 || index >= taskNum) {
-            printOutOfRange();
-            return;
+            throw new LitchiException("Task number is out of range.");
         }
 
         tasks[index].markAsDone();
@@ -90,11 +84,10 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void unmarkTask(String in) {
+    public static void unmarkTask(String in) throws LitchiException{
         int index = Integer.parseInt(in.substring(7)) - 1;
         if (index < 0 || index >= taskNum) {
-            printOutOfRange();
-            return;
+            throw new LitchiException("Task number is out of range.");
         }
 
         tasks[index].markAsNotDone();
@@ -104,70 +97,63 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void addTask(Task task) {
+    public static void addTask(Task task) throws LitchiException{
+        if (taskNum == maxTaskNums) {
+            throw new LitchiException("Exceed maximum number of tasks");
+        }
+
         tasks[taskNum] = task;
         taskNum++;
         System.out.println(indentations);
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task.toString());
-        System.out.println("Now you have " + taskNum + " task" + (taskNum == 1 ? "" : "s") + " in the list.");
+        System.out.println("Now you have " + taskNum +
+                " task" + (taskNum == 1 ? "" : "s") + " in the list.");
         System.out.println(indentations);
     }
 
-    public static void addTodo(String in) {
-        String description = in.substring(5).trim();
+    public static void addTodo(String in) throws LitchiException{
+        String description = in.substring(4).trim();
         if (description.isEmpty()) {
-            System.out.println(indentations);
-            System.out.println("The description of a todo cannot be empty!");
-            System.out.println(indentations);
-            return;
+            throw new LitchiException("The description of a todo cannot be empty.");
         }
+
         Task newTodo = new Todo(description);
         addTask(newTodo);
     }
 
-    public static void addDeadline(String in) {
+    public static void addDeadline(String in) throws LitchiException{
         int begin = 9;
         int end = in.indexOf("/by");
         if (end == -1) {
-            System.out.println(indentations);
-            System.out.println("The deadline is missing!");
-            System.out.println(indentations);
-            return;
+            throw new LitchiException("The deadline is missing! " +
+                    "Please use: deadline <task> /by <date>.");
         }
 
         String description = in.substring(begin, end).trim();
         String deadline = in.substring(end + 3).trim();
         if (description.isEmpty() || deadline.isEmpty()) {
-            System.out.println(indentations);
-            System.out.println("The description or the deadline cannot be empty!");
-            System.out.println(indentations);
-            return;
+            throw new LitchiException("The description or the deadline cannot be empty.");
         }
 
         Task newDeadline = new Deadline(description, deadline);
         addTask(newDeadline);
     }
 
-    public static void addEvent(String in) {
+    public static void addEvent(String in) throws LitchiException{
         int begin = 6;
         int from = in.indexOf("/from");
         int to = in.indexOf("/to");
         if (from == -1 || to == -1) {
-            System.out.println(indentations);
-            System.out.println("The event duration is missing!");
-            System.out.println(indentations);
-            return;
+            throw new LitchiException("The event format is incorrect! " +
+                    "Please use: event <event> /from <date> /to <date>.");
         }
 
         String description = in.substring(begin, from).trim();
         String fromTime = in.substring(from + 5, to).trim();
         String toTime = in.substring(to + 3).trim();
         if (description.isEmpty() || fromTime.isEmpty() || toTime.isEmpty()) {
-            System.out.println(indentations);
-            System.out.println("The description or time values for event cannot be empty!");
-            System.out.println(indentations);
-            return;
+            throw new LitchiException("The description or time values for event cannot be empty.");
         }
 
         Task newEvent = new Event(description, fromTime, toTime);
