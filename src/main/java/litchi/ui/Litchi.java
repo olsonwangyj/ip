@@ -1,3 +1,11 @@
+package litchi.ui;
+
+import litchi.exception.LitchiException;
+import litchi.task.Deadline;
+import litchi.task.Event;
+import litchi.task.Task;
+import litchi.task.Todo;
+
 import java.util.Scanner;
 
 public class Litchi {

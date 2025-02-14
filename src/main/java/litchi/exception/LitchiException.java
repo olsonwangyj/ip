@@ -1,3 +1,5 @@
+package litchi.exception;
+
 public class LitchiException extends Exception{
     public LitchiException(){
         super(getDefaultMessage());
