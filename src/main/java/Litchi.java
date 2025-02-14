@@ -71,7 +71,7 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void markTask(String in) throws LitchiException{
+    public static void markTask(String in) throws LitchiException {
         int index = Integer.parseInt(in.substring(5)) - 1;
         if (index < 0 || index >= taskNum) {
             throw new LitchiException("Task number is out of range.");
@@ -84,7 +84,7 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void unmarkTask(String in) throws LitchiException{
+    public static void unmarkTask(String in) throws LitchiException {
         int index = Integer.parseInt(in.substring(7)) - 1;
         if (index < 0 || index >= taskNum) {
             throw new LitchiException("Task number is out of range.");
@@ -97,7 +97,7 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void addTask(Task task) throws LitchiException{
+    public static void addTask(Task task) throws LitchiException {
         if (taskNum == maxTaskNums) {
             throw new LitchiException("Exceed maximum number of tasks");
         }
@@ -112,7 +112,7 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void addTodo(String in) throws LitchiException{
+    public static void addTodo(String in) throws LitchiException {
         String description = in.substring(4).trim();
         if (description.isEmpty()) {
             throw new LitchiException("The description of a todo cannot be empty.");
@@ -122,7 +122,7 @@ public class Litchi {
         addTask(newTodo);
     }
 
-    public static void addDeadline(String in) throws LitchiException{
+    public static void addDeadline(String in) throws LitchiException {
         int begin = 9;
         int end = in.indexOf("/by");
         if (end == -1) {
@@ -140,7 +140,7 @@ public class Litchi {
         addTask(newDeadline);
     }
 
-    public static void addEvent(String in) throws LitchiException{
+    public static void addEvent(String in) throws LitchiException {
         int begin = 6;
         int from = in.indexOf("/from");
         int to = in.indexOf("/to");
