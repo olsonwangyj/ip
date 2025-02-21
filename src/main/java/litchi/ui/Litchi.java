@@ -59,17 +59,12 @@ public class Litchi {
     }
 
     public static void loadTasks() throws IOException {
-        Task[] loadedTasks = storage.loadTasks();
-        for (Task task : loadedTasks) {
-            if (taskNum < maxTaskNums) {
-                tasks[taskNum] = task;
-                taskNum++;
-            }
-        }
+        tasks.addAll(storage.loadTasks());
+        taskNum = tasks.size();
     }
 
     private static void saveTasks() throws IOException {
-        storage.saveTasks(tasks, taskNum);
+        storage.saveTasks(tasks);
     }
 
     public static void printError(String message) {
@@ -100,14 +95,14 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void markTask(String in) throws LitchiException {
+    public static void markTask(String in) throws LitchiException,IOException {
         int index = Integer.parseInt(in.substring(5)) - 1;
         if (index < 0 || index >= taskNum) {
             throw new LitchiException("Task number is out of range.");
         }
 
         tasks.get(index).markAsDone();
-        saveTasks();
+        storage.saveTasks(tasks);
         System.out.println(indentations);
         System.out.println("Nice! I've marked this task as done:");
         System.out.println(tasks.get(index).toString());
@@ -121,7 +116,7 @@ public class Litchi {
         }
 
         tasks.get(index).markAsNotDone();
-        saveTasks();
+        storage.saveTasks(tasks);
         System.out.println(indentations);
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println(tasks.get(index).toString());
@@ -131,7 +126,7 @@ public class Litchi {
     public static void addTask(Task task) throws LitchiException, IOException {
         tasks.add(task);
         taskNum++;
-        saveTasks();
+        storage.saveTasks(tasks);
         System.out.println(indentations);
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task.toString());

@@ -1,17 +1,23 @@
 # IDEA files
 /.idea/
+*.iml
+
+# Build output
 /out/
-/*.iml
+.build/
+bin/
 
 # Gradle build files
 /.gradle/
-/build/
+build/
 src/main/resources/docs/
 
-# MacOS custom attributes files created by Finder
+# OS-specific files
 .DS_Store
-*.iml
-bin/
 
+# Testing files
 /text-ui-test/ACTUAL.TXT
-text-ui-test/EXPECTED-UNIX.TXT
+/text-ui-test/EXPECTED-UNIX.TXT
+
+# Ignore data directory
+/data/

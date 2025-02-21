@@ -61,13 +61,12 @@ public class Storage {
         return task;
     }
 
-    public Task[] loadTasks() throws IOException {
-        Task[] tasks = new Task[100];
-        int counter = 0;
+    public List<Task> loadTasks() throws IOException {
+        List<Task> tasks = new ArrayList<>();
         final File file = new File(filePath);
         if (!file.exists()) {
             createNewFile();
-            return new Task[0];
+            return tasks;
         }
 
         try (Scanner scanner = new Scanner(file)) {
@@ -75,8 +74,7 @@ public class Storage {
                 String line = scanner.nextLine();
                 Task task = parseTask(line);
                 if (task != null) {
-                    tasks[counter] = task;
-                    counter++;
+                    tasks.add(task);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -86,12 +84,12 @@ public class Storage {
         return tasks;
     }
 
-    public void saveTasks(Task[] tasks, int taskNum) throws IOException {
+    public void saveTasks(List<Task> tasks) throws IOException {
         File file = new File(filePath);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (int i = 0; i < taskNum; i++) {
-                writer.write(formatTask(tasks[i]));
+            for (Task task : tasks) {
+                writer.write(formatTask(task));
                 writer.newLine();
             }
         } catch (IOException e) {
