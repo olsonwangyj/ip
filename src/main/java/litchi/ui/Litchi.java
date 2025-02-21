@@ -63,10 +63,6 @@ public class Litchi {
         taskNum = tasks.size();
     }
 
-    private static void saveTasks() throws IOException {
-        storage.saveTasks(tasks);
-    }
-
     public static void printError(String message) {
         System.out.println(indentations);
         System.out.println(message);
@@ -183,7 +179,7 @@ public class Litchi {
         addTask(newEvent);
     }
 
-    public static void deleteTask(String in) throws LitchiException {
+    public static void deleteTask(String in) throws LitchiException, IOException {
         int index = Integer.parseInt(in.substring(7)) - 1;
         if (index < 0 || index >= taskNum) {
             throw new LitchiException("Task number is out of range.");
@@ -198,5 +194,6 @@ public class Litchi {
 
         tasks.remove(index);
         taskNum--;
+        storage.saveTasks(tasks);
     }
 }
