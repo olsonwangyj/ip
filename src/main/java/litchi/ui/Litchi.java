@@ -7,10 +7,10 @@ import litchi.task.Task;
 import litchi.task.Todo;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Litchi {
-    private final static int maxTaskNums = 100;
-    private static final Task[] tasks = new Task[maxTaskNums];
+    private static final ArrayList<Task> tasks = new ArrayList<>();
     private static int taskNum = 0;
     private final static String indentations = "_____________________________________________";
 
@@ -74,7 +74,7 @@ public class Litchi {
         System.out.println(indentations);
         System.out.println("Here are the tasks in your list:");
         for (int i = 0; i < taskNum; i++) {
-            System.out.println((i + 1) + "." + tasks[i].toString());
+            System.out.println((i + 1) + "." + tasks.get(i).toString());
         }
         System.out.println(indentations);
     }
@@ -85,10 +85,10 @@ public class Litchi {
             throw new LitchiException("Task number is out of range.");
         }
 
-        tasks[index].markAsDone();
+        tasks.get(index).markAsDone();
         System.out.println(indentations);
         System.out.println("Nice! I've marked this task as done:");
-        System.out.println(tasks[index].toString());
+        System.out.println(tasks.get(index).toString());
         System.out.println(indentations);
     }
 
@@ -98,19 +98,15 @@ public class Litchi {
             throw new LitchiException("Task number is out of range.");
         }
 
-        tasks[index].markAsNotDone();
+        tasks.get(index).markAsNotDone();
         System.out.println(indentations);
         System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println(tasks[index].toString());
+        System.out.println(tasks.get(index).toString());
         System.out.println(indentations);
     }
 
     public static void addTask(Task task) throws LitchiException {
-        if (taskNum == maxTaskNums) {
-            throw new LitchiException("Exceed maximum number of tasks");
-        }
-
-        tasks[taskNum] = task;
+        tasks.add(task);
         taskNum++;
         System.out.println(indentations);
         System.out.println("Got it. I've added this task:");
