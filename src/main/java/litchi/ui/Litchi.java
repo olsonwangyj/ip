@@ -5,7 +5,9 @@ import litchi.task.Deadline;
 import litchi.task.Event;
 import litchi.task.Task;
 import litchi.task.Todo;
+import litchi.storage.Storage;
 
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -13,9 +15,12 @@ public class Litchi {
     private static final ArrayList<Task> tasks = new ArrayList<>();
     private static int taskNum = 0;
     private final static String indentations = "_____________________________________________";
+    private static final String FILE_PATH = "./data/litchi.txt";
+    static Storage storage = new Storage(FILE_PATH);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
+        loadTasks();
         printHello();
 
         Scanner scanner = new Scanner(System.in);
@@ -53,6 +58,20 @@ public class Litchi {
         }
     }
 
+    public static void loadTasks() throws IOException {
+        Task[] loadedTasks = storage.loadTasks();
+        for (Task task : loadedTasks) {
+            if (taskNum < maxTaskNums) {
+                tasks[taskNum] = task;
+                taskNum++;
+            }
+        }
+    }
+
+    private static void saveTasks() throws IOException {
+        storage.saveTasks(tasks, taskNum);
+    }
+
     public static void printError(String message) {
         System.out.println(indentations);
         System.out.println(message);
@@ -88,28 +107,31 @@ public class Litchi {
         }
 
         tasks.get(index).markAsDone();
+        saveTasks();
         System.out.println(indentations);
         System.out.println("Nice! I've marked this task as done:");
         System.out.println(tasks.get(index).toString());
         System.out.println(indentations);
     }
 
-    public static void unmarkTask(String in) throws LitchiException {
+    public static void unmarkTask(String in) throws LitchiException, IOException {
         int index = Integer.parseInt(in.substring(7)) - 1;
         if (index < 0 || index >= taskNum) {
             throw new LitchiException("Task number is out of range.");
         }
 
         tasks.get(index).markAsNotDone();
+        saveTasks();
         System.out.println(indentations);
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println(tasks.get(index).toString());
         System.out.println(indentations);
     }
 
-    public static void addTask(Task task) throws LitchiException {
+    public static void addTask(Task task) throws LitchiException, IOException {
         tasks.add(task);
         taskNum++;
+        saveTasks();
         System.out.println(indentations);
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task.toString());
@@ -118,7 +140,7 @@ public class Litchi {
         System.out.println(indentations);
     }
 
-    public static void addTodo(String in) throws LitchiException {
+    public static void addTodo(String in) throws LitchiException, IOException {
         String description = in.substring(4).trim();
         if (description.isEmpty()) {
             throw new LitchiException("The description of a todo cannot be empty.");
@@ -128,7 +150,7 @@ public class Litchi {
         addTask(newTodo);
     }
 
-    public static void addDeadline(String in) throws LitchiException {
+    public static void addDeadline(String in) throws LitchiException, IOException {
         int begin = 9;
         int end = in.indexOf("/by");
         if (end == -1) {
@@ -146,7 +168,7 @@ public class Litchi {
         addTask(newDeadline);
     }
 
-    public static void addEvent(String in) throws LitchiException {
+    public static void addEvent(String in) throws LitchiException, IOException {
         int begin = 6;
         int from = in.indexOf("/from");
         int to = in.indexOf("/to");
