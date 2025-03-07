@@ -7,6 +7,9 @@ import litchi.storage.Storage;
 
 import java.io.IOException;
 
+/**
+ * Represents the main application logic of Litchi, a task management program.
+ */
 public class Litchi {
 
     private static Ui ui = new Ui();
@@ -14,6 +17,11 @@ public class Litchi {
     private static Storage storage = new Storage(FILE_PATH);
     private static TaskList taskList;
 
+    /**
+     * The entry point of the program.
+     *
+     * @param args Command-line arguments.
+     */
     public static void main(String[] args) throws IOException {
 
         try {
@@ -69,7 +77,7 @@ public class Litchi {
         int index = Parser.parseIndex(in, 7);
         taskList.markTaskAsNotDone(index);
         storage.saveTasks(taskList.getTasks());
-        ui.showTaskMarkedAsDone(taskList.getTask(index));
+        ui.showTaskMarkedAsNotDone(taskList.getTask(index));
     }
 
     private static void handleTodo(String in) throws LitchiException, IOException {

@@ -4,13 +4,25 @@ import java.io.*;
 import java.util.*;
 import litchi.task.*;
 
+/**
+ * Store or load the data file.
+ */
 public class Storage {
     private final String filePath;
 
+    /**
+     * Constructor of the Stroage
+     * @param filePath The path of the file be loaded.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Creates a new file for storing tasks if it does not exist.
+     *
+     * @throws IOException If an error occurs while creating the file.
+     */
     public void createNewFile() throws IOException {
         File directory = new File("./data");
         if (!directory.exists()) {
@@ -25,6 +37,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Parses a line from the file and converts it into a Task object.
+     *
+     * @param line The line containing task details in the file.
+     * @return A Task object created from the line, or null if the format is invalid.
+     */
     public Task parseTask(String line) {
         String[] parts = line.split("\\|");
         if (parts.length < 3) {
@@ -61,6 +79,12 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Loads tasks from the file and returns them as a list.
+     *
+     * @return A list of tasks loaded from the file.
+     * @throws IOException If an error occurs while reading the file.
+     */
     public List<Task> loadTasks() throws IOException {
         List<Task> tasks = new ArrayList<>();
         final File file = new File(filePath);
@@ -84,6 +108,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the given list of tasks to the file.
+     *
+     * @param tasks The list of tasks to be saved.
+     * @throws IOException If an error occurs while writing to the file.
+     */
     public void saveTasks(List<Task> tasks) throws IOException {
         File file = new File(filePath);
 
@@ -97,6 +127,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Formats a Task object into a string suitable for file storage.
+     *
+     * @param task The task to be formatted.
+     * @return A formatted string representation of the task.
+     */
     private String formatTask(Task task) {
         String type = task instanceof Todo ? "T" :
                       task instanceof Deadline ? "D" :
