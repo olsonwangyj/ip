@@ -5,11 +5,27 @@ import litchi.task.Deadline;
 import litchi.task.Event;
 import litchi.task.Todo;
 
+/**
+ * Parse the user's command
+ */
 public class Parser {
+    /**
+     * Get the index of the input after the keyword.
+     * @param command The user's input command.
+     * @param prefixLength The length of the keyword
+     * @return The index of the input after the keyword.
+     * @throws NumberFormatException If the index is a legal number.
+     */
     public static int parseIndex(String command, int prefixLength) throws NumberFormatException {
         return Integer.parseInt(command.substring(prefixLength).trim()) - 1;
     }
 
+    /**
+     * Parse the todo command.
+     * @param command The user input.
+     * @return The Todo from the user's input
+     * @throws LitchiException If the index is out of bounds.
+     */
     public static Todo parseTodoCommand(String command) throws LitchiException {
         String description = command.substring(4).trim();
         if (description.isEmpty()) {
@@ -18,6 +34,12 @@ public class Parser {
         return new Todo(description);
     }
 
+    /**
+     * Parse the deadline command.
+     * @param command The user input.
+     * @return The Deadline from the user's input
+     * @throws LitchiException If the index is out of bounds.
+     */
     public static Deadline parseDeadlineCommand(String command) throws LitchiException {
         int begin = 9;
         int end = command.indexOf("/by");
@@ -35,6 +57,12 @@ public class Parser {
         return new Deadline(description, deadline);
     }
 
+    /**
+     * Parse the event command.
+     * @param command The user input.
+     * @return The Event from the user's input
+     * @throws LitchiException If the index is out of bounds.
+     */
     public static Event parseEventCommand(String command) throws LitchiException {
         int begin = 6;
         int from = command.indexOf("/from");
@@ -54,6 +82,12 @@ public class Parser {
         return new Event(description, fromTime, toTime);
     }
 
+    /**
+     * Parse the find command.
+     * @param command The user input.
+     * @return The String needs to be found.
+     * @throws LitchiException If the index is out of bounds.
+     */
     public static String parseFindCommand(String command) throws LitchiException {
         int begin = 5;
         return command.substring(begin).trim();
