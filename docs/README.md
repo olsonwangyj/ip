@@ -1,77 +1,129 @@
 # Litchi User Guide
 
-## Adding tasks
-Users can add a task by entering the task description. The task will be stored in a list.
+Litchi is a task management application optimized for use via a Command Line Interface (CLI). Litchi can help you manage your tasks efficiently.
 
-Example:
+## Features
+
+### Adding a Todo Task: `todo`
+Adds a simple task without a specific time or date.
+
+**Format:**
 ```
-read book
+todo TASK_DESCRIPTION
 ```
-Expected output:
+**Examples:**
 ```
-____________________________________________________________
-added: [ ] read book
-____________________________________________________________
+todo Buy groceries
+todo Submit assignment
 ```
 
-## Listing tasks
-Users can view all added tasks by using the `list` command.
+### Adding a Deadline Task: `deadline`
+Adds a task with a specific deadline.
 
-Example:
+**Format:**
+```
+deadline TASK_DESCRIPTION /by DEADLINE_DATE
+```
+**Examples:**
+```
+deadline Submit report /by Dec 5
+```
+
+### Adding an Event Task: `event`
+Adds a task that occurs at a specific time.
+
+**Format:**
+```
+event TASK_DESCRIPTION /from EVENT_TIME /to EVENT_TIME
+```
+**Examples:**
+```
+event Team meeting /from Monday 2pm /to 3pm
+```
+
+### Listing All Tasks: `list`
+Displays all tasks currently stored in the task list.
+
+**Format:**
 ```
 list
 ```
-Expected output:
+
+### Marking a Task as Done: `mark`
+Marks a task as completed.
+
+**Format:**
 ```
-____________________________________________________________
-Here are the tasks in your list:
-1. [ ] read book
-2. [ ] return book
-3. [ ] buy bread
-____________________________________________________________
+mark INDEX
+```
+**Example:**
+```
+mark 2  # Marks the 2nd task as done
 ```
 
-## Marking a task as done
-Users can mark a task as done by using the `mark` command followed by the task number.
+### Unmarking a Task: `unmark`
+Marks a completed task as not done.
 
-Example:
+**Format:**
 ```
-mark 2
+unmark INDEX
 ```
-Expected output:
+**Example:**
 ```
-____________________________________________________________
-Nice! I've marked this task as done:
-  [X] return book
-____________________________________________________________
+unmark 3  # Marks the 3rd task as not done
 ```
 
-## Unmarking a task
-Users can mark a task as not done by using the `unmark` command followed by the task number.
+### Finding Tasks: `find`
+Searches for tasks containing the specified keyword.
 
-Example:
+**Format:**
 ```
-unmark 2
+find KEYWORD
 ```
-Expected output:
+**Example:**
 ```
-____________________________________________________________
-OK, I've marked this task as not done yet:
-  [ ] return book
-____________________________________________________________
+find report  # Finds all tasks containing the word "report"
 ```
 
-## Exiting the program
-Users can exit the program by typing `bye`.
+### Deleting a Task: `delete`
+Removes a task from the list.
 
-Example:
+**Format:**
+```
+delete INDEX
+```
+**Example:**
+```
+delete 1  # Deletes the 1st task
+```
+
+### Exiting the Program: `bye`
+Closes the application.
+
+**Format:**
 ```
 bye
 ```
-Expected output:
-```
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
-```
 
+## Data Storage
+- Tasks are saved automatically to a text file at `./data/litchi.txt` after any modification.
+- The application will attempt to load existing tasks from this file when started.
+
+## Error Handling
+- The application provides error messages for invalid commands or inputs.
+- e.g. If you enter an invalid index, the application will notify you.
+
+## Command Summary
+| Action | Format & Example                                                                                             |
+|-------------|--------------------------------------------------------------------------------------------------------------|
+| Add a todo task | `todo TASK_DESCRIPTION` e.g., `todo Finish report`                                                           |
+| Add a deadline | `deadline TASK_DESCRIPTION /by DEADLINE_DATE` e.g., `deadline Submit report /by Dec 5`                       |
+| Add an event | `event TASK_DESCRIPTION /from EVENT_TIME /to EVENT_TIME` e.g., `event Team meeting /from Monday 2pm /to 3pm` |
+| List tasks | `list`                                                                                                       |
+| Mark as done | `mark INDEX` e.g., `mark 1`                                                                                  |
+| Mark as not done | `unmark INDEX` e.g., `unmark 2`                                                                              |
+| Find tasks | `find KEYWORD` e.g., `find report`                                                                           |
+| Delete task | `delete INDEX` e.g., `delete 2`                                                                              |
+| Exit application | `bye`                                                                                                        |
+
+Enjoy using Litchi to manage your tasks efficiently!
