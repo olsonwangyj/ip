@@ -1,199 +1,103 @@
 package litchi.ui;
 
 import litchi.exception.LitchiException;
-import litchi.task.Deadline;
-import litchi.task.Event;
 import litchi.task.Task;
-import litchi.task.Todo;
+import litchi.task.TaskList;
 import litchi.storage.Storage;
 
 import java.io.IOException;
-import java.util.Scanner;
-import java.util.ArrayList;
 
 public class Litchi {
-    private static final ArrayList<Task> tasks = new ArrayList<>();
-    private static int taskNum = 0;
-    private final static String indentations = "_____________________________________________";
+
+    private static Ui ui = new Ui();
     private static final String FILE_PATH = "./data/litchi.txt";
-    static Storage storage = new Storage(FILE_PATH);
+    private static Storage storage = new Storage(FILE_PATH);
+    private static TaskList taskList;
 
     public static void main(String[] args) throws IOException {
 
-        loadTasks();
-        printHello();
+        try {
+            taskList = new TaskList(storage.loadTasks());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        Scanner scanner = new Scanner(System.in);
+        ui.showWelcome();
+
         while (true) {
             try {
-                String in = scanner.nextLine().trim();
+                String in = ui.readCommand();
 
                 if (in.equals("bye")) {
-                    printBye();
+                    ui.showGoodbye();
                     break;
                 } else if (in.equals("list")) {
-                    printTaskList();
+                    ui.showTaskList(taskList);
                 } else if (in.startsWith("mark")) {
-                    markTask(in);
+                    handleMark(in);
                 } else if (in.startsWith("unmark")) {
-                    unmarkTask(in);
+                    handleUnmark(in);
                 } else if (in.startsWith("todo")) {
-                    addTodo(in);
+                    handleTodo(in);
                 } else if (in.startsWith("deadline")) {
-                    addDeadline(in);
+                    handleDeadline(in);
                 } else if (in.startsWith("event")) {
-                    addEvent(in);
+                    handleEvent(in);
                 } else if (in.startsWith("delete")) {
-                    deleteTask(in);
+                    handleDelete(in);
                 } else {
                     throw new LitchiException();
                 }
             } catch (LitchiException e) {
-                printError(e.getMessage());
+                ui.showError(e.getMessage());
             } catch (NumberFormatException e) {
-                printError("Invalid number format. Please enter a valid task number.");
+                ui.showError("Invalid number format. Please enter a valid task number.");
             } catch (Exception e) {
-                printError("An unexpected error occurred: " + e.getMessage());
+                ui.showError("An unexpected error occurred: " + e.getMessage());
             }
         }
     }
 
-    public static void loadTasks() throws IOException {
-        tasks.addAll(storage.loadTasks());
-        taskNum = tasks.size();
+    private static void handleMark(String in) throws LitchiException, IOException {
+        int index = Parser.parseIndex(in, 5);
+        taskList.markTaskAsDone(index);
+        storage.saveTasks(taskList.getTasks());
+        ui.showTaskMarkedAsDone(taskList.getTask(index));
     }
 
-    public static void printError(String message) {
-        System.out.println(indentations);
-        System.out.println(message);
-        System.out.println(indentations);
+    private static void handleUnmark(String in) throws LitchiException, IOException {
+        int index = Parser.parseIndex(in, 7);
+        taskList.markTaskAsNotDone(index);
+        storage.saveTasks(taskList.getTasks());
+        ui.showTaskMarkedAsDone(taskList.getTask(index));
     }
 
-    public static void printHello() {
-        System.out.println(indentations);
-        System.out.println("Hello! I'm Litchi");
-        System.out.println("What can I do for you?");
-        System.out.println(indentations);
+    private static void handleTodo(String in) throws LitchiException, IOException {
+        Task todo = Parser.parseTodoCommand(in);
+        taskList.addTask(todo);
+        storage.saveTasks(taskList.getTasks());
+        ui.showTaskAdded(todo, taskList.getTaskCount());
     }
 
-    public static void printBye() {
-        System.out.println(indentations);
-        System.out.println("Bye. Hope to see you again soon!");
-        System.out.println(indentations);
+    private static void handleDeadline(String in) throws LitchiException, IOException {
+        Task deadline = Parser.parseDeadlineCommand(in);
+        taskList.addTask(deadline);
+        storage.saveTasks(taskList.getTasks());
+        ui.showTaskAdded(deadline, taskList.getTaskCount());
     }
 
-    public static void printTaskList() {
-        System.out.println(indentations);
-        System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskNum; i++) {
-            System.out.println((i + 1) + "." + tasks.get(i).toString());
-        }
-        System.out.println(indentations);
+    private static void handleEvent(String in) throws LitchiException, IOException {
+        Task deadline = Parser.parseEventCommand(in);
+        taskList.addTask(deadline);
+        storage.saveTasks(taskList.getTasks());
+        ui.showTaskAdded(deadline, taskList.getTaskCount());
     }
 
-    public static void markTask(String in) throws LitchiException,IOException {
-        int index = Integer.parseInt(in.substring(5)) - 1;
-        if (index < 0 || index >= taskNum) {
-            throw new LitchiException("Task number is out of range.");
-        }
-
-        tasks.get(index).markAsDone();
-        storage.saveTasks(tasks);
-        System.out.println(indentations);
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println(tasks.get(index).toString());
-        System.out.println(indentations);
-    }
-
-    public static void unmarkTask(String in) throws LitchiException, IOException {
-        int index = Integer.parseInt(in.substring(7)) - 1;
-        if (index < 0 || index >= taskNum) {
-            throw new LitchiException("Task number is out of range.");
-        }
-
-        tasks.get(index).markAsNotDone();
-        storage.saveTasks(tasks);
-        System.out.println(indentations);
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println(tasks.get(index).toString());
-        System.out.println(indentations);
-    }
-
-    public static void addTask(Task task) throws LitchiException, IOException {
-        tasks.add(task);
-        taskNum++;
-        storage.saveTasks(tasks);
-        System.out.println(indentations);
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + task.toString());
-        System.out.println("Now you have " + taskNum +
-                " task" + (taskNum == 1 ? "" : "s") + " in the list.");
-        System.out.println(indentations);
-    }
-
-    public static void addTodo(String in) throws LitchiException, IOException {
-        String description = in.substring(4).trim();
-        if (description.isEmpty()) {
-            throw new LitchiException("The description of a todo cannot be empty.");
-        }
-
-        Task newTodo = new Todo(description);
-        addTask(newTodo);
-    }
-
-    public static void addDeadline(String in) throws LitchiException, IOException {
-        int begin = 9;
-        int end = in.indexOf("/by");
-        if (end == -1) {
-            throw new LitchiException("The deadline is missing! " +
-                    "Please use: deadline <task> /by <date>.");
-        }
-
-        String description = in.substring(begin, end).trim();
-        String deadline = in.substring(end + 3).trim();
-        if (description.isEmpty() || deadline.isEmpty()) {
-            throw new LitchiException("The description or the deadline cannot be empty.");
-        }
-
-        Task newDeadline = new Deadline(description, deadline);
-        addTask(newDeadline);
-    }
-
-    public static void addEvent(String in) throws LitchiException, IOException {
-        int begin = 6;
-        int from = in.indexOf("/from");
-        int to = in.indexOf("/to");
-        if (from == -1 || to == -1) {
-            throw new LitchiException("The event format is incorrect! " +
-                    "Please use: event <event> /from <date> /to <date>.");
-        }
-
-        String description = in.substring(begin, from).trim();
-        String fromTime = in.substring(from + 5, to).trim();
-        String toTime = in.substring(to + 3).trim();
-        if (description.isEmpty() || fromTime.isEmpty() || toTime.isEmpty()) {
-            throw new LitchiException("The description or time values for event cannot be empty.");
-        }
-
-        Task newEvent = new Event(description, fromTime, toTime);
-        addTask(newEvent);
-    }
-
-    public static void deleteTask(String in) throws LitchiException, IOException {
-        int index = Integer.parseInt(in.substring(7)) - 1;
-        if (index < 0 || index >= taskNum) {
-            throw new LitchiException("Task number is out of range.");
-        }
-
-        System.out.println(indentations);
-        System.out.println("Noted. I've removed this task:");
-        System.out.println("  " + tasks.get(index).toString());
-        System.out.println("Now you have " + taskNum +
-                " task" + (taskNum == 1 ? "" : "s") + " in the list.");
-        System.out.println(indentations);
-
-        tasks.remove(index);
-        taskNum--;
-        storage.saveTasks(tasks);
+    private static void handleDelete(String in) throws LitchiException, IOException {
+        int index = Parser.parseIndex(in, 7);
+        Task taskToDelete = taskList.getTask(index);
+        taskList.deleteTask(index);
+        storage.saveTasks(taskList.getTasks());
+        ui.showTaskDeleted(taskToDelete, taskList.getTaskCount());
     }
 }
