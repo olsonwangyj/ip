@@ -45,6 +45,8 @@ public class Litchi {
                     handleEvent(in);
                 } else if (in.startsWith("delete")) {
                     handleDelete(in);
+                } else if (in.startsWith("find")) {
+                    handleFind(in);
                 } else {
                     throw new LitchiException();
                 }
@@ -99,5 +101,11 @@ public class Litchi {
         taskList.deleteTask(index);
         storage.saveTasks(taskList.getTasks());
         ui.showTaskDeleted(taskToDelete, taskList.getTaskCount());
+    }
+
+    private static void handleFind(String in) throws LitchiException, IOException {
+        String command = Parser.parseFindCommand(in);
+        TaskList findOutcome = taskList.findTask(command);
+        ui.showFindTask(findOutcome);
     }
 }

@@ -85,6 +85,13 @@ public class Ui {
 
     public void showFindTask(TaskList taskList) {
         System.out.println(indentations);
+
+        if (taskList.getTaskCount() == 0) {
+            System.out.println("No tasks found.");
+            System.out.println(indentations);
+            return;
+        }
+
         System.out.println("Here are the matching tasks in your list:");
 
         for (int i = 0; i < taskList.getTaskCount(); i++) {
