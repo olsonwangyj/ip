@@ -113,17 +113,4 @@ bye
 - The application provides error messages for invalid commands or inputs.
 - e.g. If you enter an invalid index, the application will notify you.
 
-## Command Summary
-| Action | Format & Example                                                                                             |
-|-------------|--------------------------------------------------------------------------------------------------------------|
-| Add a todo task | `todo TASK_DESCRIPTION` e.g., `todo Finish report`                                                           |
-| Add a deadline | `deadline TASK_DESCRIPTION /by DEADLINE_DATE` e.g., `deadline Submit report /by Dec 5`                       |
-| Add an event | `event TASK_DESCRIPTION /from EVENT_TIME /to EVENT_TIME` e.g., `event Team meeting /from Monday 2pm /to 3pm` |
-| List tasks | `list`                                                                                                       |
-| Mark as done | `mark INDEX` e.g., `mark 1`                                                                                  |
-| Mark as not done | `unmark INDEX` e.g., `unmark 2`                                                                              |
-| Find tasks | `find KEYWORD` e.g., `find report`                                                                           |
-| Delete task | `delete INDEX` e.g., `delete 2`                                                                              |
-| Exit application | `bye`                                                                                                        |
-
 Enjoy using Litchi to manage your tasks efficiently!
