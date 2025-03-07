@@ -82,4 +82,19 @@ public class Ui {
                 " task" + (taskCount == 1 ? "" : "s") + " in the list.");
         System.out.println(indentations);
     }
+
+    public void showFindTask(TaskList taskList) {
+        System.out.println(indentations);
+        System.out.println("Here are the matching tasks in your list:");
+
+        for (int i = 0; i < taskList.getTaskCount(); i++) {
+            try {
+                System.out.println((i + 1) + "." + taskList.getTask(i).toString());
+            } catch (Exception e) {
+                System.out.println("Error displaying task " + (i + 1) + ": " + e.getMessage());
+            }
+        }
+
+        System.out.println(indentations);
+    }
 }

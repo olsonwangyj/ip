@@ -61,4 +61,16 @@ public class TaskList {
         tasks.remove(index);
         taskNum--;
     }
+
+    public TaskList findTask(String command) throws LitchiException {
+        TaskList findOutcome = new TaskList();
+        for (Task task : tasks) {
+            String cur = task.getDescription();
+            if (cur.contains(command)) {
+                findOutcome.addTask(task);
+            }
+        }
+
+        return findOutcome;
+    }
 }

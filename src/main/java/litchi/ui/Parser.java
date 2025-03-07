@@ -53,4 +53,9 @@ public class Parser {
 
         return new Event(description, fromTime, toTime);
     }
+
+    public static String parseFindCommand(String command) throws LitchiException {
+        int begin = 5;
+        return command.substring(begin).trim();
+    }
 }
